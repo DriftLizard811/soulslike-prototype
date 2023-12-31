@@ -106,8 +106,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  rotationSpeed: 40
-  elevationSpeed: 120
+  playerRotation: {x: 0, y: 0, z: 0, w: 0}
+  clipCamera: 1
+  rotationSpeed: 2
+  elevationSpeed: 6
   elevationMinLimit: -20
   elevationMaxLimit: 80
   distance: 5

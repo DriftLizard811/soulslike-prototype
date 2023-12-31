@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: testplayer
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4d95f7cfcdc54ea49a7cf89da0786a75, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -113,7 +117,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1184be258e870f54a89facab3d57dc88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  orbitingCamera: {fileID: 0}
   moveSpeed: 2.5
+  cameraRotation: {x: 0, y: 0, z: 0, w: 0}
+  cameraTransform: {fileID: 0}
   gravityFactor: 9.8
 --- !u!114 &7985900861829219817
 MonoBehaviour:

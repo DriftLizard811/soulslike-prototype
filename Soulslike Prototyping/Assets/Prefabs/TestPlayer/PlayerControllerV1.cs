@@ -10,6 +10,7 @@ public class PlayerControllerV1 : MonoBehaviour
 
     //player movement
     Vector3 inputDirection;
+    [HideInInspector] public Vector2 lookDirection;
     [SerializeField] float moveSpeed = 3f;
     [HideInInspector] public Quaternion cameraRotation;
     [HideInInspector] public Transform cameraTransform;
@@ -44,5 +45,10 @@ public class PlayerControllerV1 : MonoBehaviour
     void OnMove(InputValue movementValue)
     {
         inputDirection = new Vector3(movementValue.Get<Vector2>().x, 0, movementValue.Get<Vector2>().y);
+    }
+
+    void OnLook(InputValue lookValue)
+    {
+        lookDirection = lookValue.Get<Vector2>();   
     }
 }

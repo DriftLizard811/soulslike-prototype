@@ -8,6 +8,8 @@ public class OrbitingCamera : MonoBehaviour
     public PlayerControllerV1 target;
     [HideInInspector] public Quaternion playerRotation;
 
+    [SerializeField] bool clipCamera;
+
     //the speeds at which rotation and elevation are changed
     [SerializeField] float rotationSpeed = 120.0f;
     [SerializeField] float elevationSpeed = 120.0f;
@@ -45,8 +47,10 @@ public class OrbitingCamera : MonoBehaviour
     void LateUpdate()
     {
         if (target) {
-            rotationAroundTarget += Input.GetAxis("Mouse X") * rotationSpeed * distance * 0.02f;
-            elevationToTarget -= Input.GetAxis("Mouse Y") * elevationSpeed * 0.02f;
+            Vector2 playerLookDirection = GetLookDirection(target);
+
+            rotationAroundTarget += playerLookDirection.x * rotationSpeed * distance * 0.02f;
+            elevationToTarget -= playerLookDirection.y * elevationSpeed * 0.02f;
 
             //limit elevation to the range
             elevationToTarget = ClampAngle(elevationToTarget, elevationMinLimit, elevationMaxLimit);
@@ -59,12 +63,40 @@ public class OrbitingCamera : MonoBehaviour
             Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
             Vector3 position = rotation * negDistance + target.transform.position;
 
+            //make sure that the camera doesn't clip through walls
+            if (clipCamera) {
+
+                //store data about any potential hit
+                RaycastHit hitInfo;
+
+                //create the ray to be cast from the target towards the camera
+                var ray = new Ray(target.transform.position, position - target.transform.position);
+
+                //store a potential hit, true means hit
+                var hit = Physics.Raycast(ray, out hitInfo, distance);
+
+                //if there was a hit, adjust the position to reflect that
+                if (hit) {
+                    position = hitInfo.point;
+                }
+            }
+
             //update position and rotation
             transform.position = position;
             transform.rotation = rotation;
 
             //update the player rotation
             target.cameraRotation = playerRotation;
+        }
+    }
+
+    Vector2 GetLookDirection(PlayerControllerV1 target)
+    {
+        if (target.lookDirection != Vector2.zero) {
+            return target.lookDirection;
+        }
+        else {
+            return new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         }
     }
 
