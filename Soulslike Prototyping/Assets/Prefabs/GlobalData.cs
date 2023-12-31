@@ -8,6 +8,7 @@ public class GlobalData : MonoBehaviour
 
     [HideInInspector] public PlayerControllerV1 player;
     [HideInInspector] public OrbitingCamera orbitingCamera;
+    public List<EnemyTag> enemyList = new List<EnemyTag>();
 
     void Awake()
     {

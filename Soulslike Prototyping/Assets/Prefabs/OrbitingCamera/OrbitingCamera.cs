@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public class OrbitingCamera : MonoBehaviour
@@ -7,6 +8,10 @@ public class OrbitingCamera : MonoBehaviour
     //object being rotated around
     PlayerControllerV1 target;
     [HideInInspector] public Quaternion playerRotation;
+
+    [HideInInspector] public float screenWidth;
+    [HideInInspector] public float screenHeight;
+    [HideInInspector] public Vector2 screenCenter = Vector2.zero;
 
     [SerializeField] bool clipCamera;
     public bool isLockedOn = false;
@@ -34,6 +39,11 @@ public class OrbitingCamera : MonoBehaviour
     void Awake()
     {
         GlobalData.global.orbitingCamera = this;
+
+        //get the screen width and height
+        screenWidth = Screen.width;
+        screenHeight = Screen.height;
+        screenCenter = new Vector2(screenWidth / 2, screenHeight / 2);
     }
 
     void Start()
@@ -70,7 +80,7 @@ public class OrbitingCamera : MonoBehaviour
                 //get the angles between the player and the lock on target
                 Vector3 rotationAngles = FindLockOnTargetRotation(target.transform, lockOnTarget);
 
-                Debug.Log(rotationAngles);
+                //Debug.Log(rotationAngles);
 
                 //compute rotation based on the rotation angles
                 rotation = Quaternion.Euler(rotationAngles.x, rotationAngles.y, 0);
@@ -158,19 +168,19 @@ public class OrbitingCamera : MonoBehaviour
 
         //adjust angles for proper signs
         if (origin.position.x <= target.position.x && origin.position.z <= target.position.z) {
-            Debug.Log("upperright");
+            //Debug.Log("upperright");
             yRotationValue -= (-90 + yRotationValue * 2);
         }
         else if (origin.position.x > target.position.x && origin.position.z <= target.position.z) {
-            Debug.Log("upperleft");
+            //Debug.Log("upperleft");
             yRotationValue -= 90;
         }
         else if (origin.position.x > target.position.x && origin.position.z > target.position.z) {
-            Debug.Log("lowerleft");
+            //Debug.Log("lowerleft");
             yRotationValue -= (90 + yRotationValue * 2);
         }
         else if (origin.position.x <= target.position.x && origin.position.z > target.position.z) {
-            Debug.Log("lowerright");
+            //Debug.Log("lowerright");
             yRotationValue -= 270;
         }
         

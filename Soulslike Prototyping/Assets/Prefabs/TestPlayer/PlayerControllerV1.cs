@@ -62,6 +62,18 @@ public class PlayerControllerV1 : MonoBehaviour
         }
     }
 
+    //determines if a screen point is on screen
+    bool IsPointOnScreen(Vector3 point)
+    {
+        var screenPoint = Camera.main.WorldToScreenPoint(point);
+        if (screenPoint.x >= 0 && screenPoint.x <= orbitingCamera.screenWidth && screenPoint.y >= 0 && screenPoint.y <= orbitingCamera.screenHeight) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     void OnMove(InputValue movementValue)
     {
         inputDirection = new Vector3(movementValue.Get<Vector2>().x, 0, movementValue.Get<Vector2>().y);
@@ -78,7 +90,35 @@ public class PlayerControllerV1 : MonoBehaviour
             orbitingCamera.isLockedOn = false;
         }
         else {
-            orbitingCamera.isLockedOn = true;
+            if (GlobalData.global.enemyList.Count > 0) {
+                List<EnemyTag> globalEnemyList = GlobalData.global.enemyList;
+                Transform target = null;
+
+                for (int i = 0; i < globalEnemyList.Count; i++) {
+                    if (IsPointOnScreen(globalEnemyList[i].transform.position)) {
+                        if (target == null) {
+                            target = globalEnemyList[i].transform;
+                        }
+                        else {
+                            float targetDistance = Vector2.Distance(Camera.main.WorldToScreenPoint(target.position), orbitingCamera.screenCenter);
+                            float testDistance = Vector2.Distance(Camera.main.WorldToScreenPoint(globalEnemyList[i].transform.position), orbitingCamera.screenCenter);
+
+                            if (testDistance < targetDistance) {
+                                target = globalEnemyList[i].transform;
+                            }
+                        }
+                    }
+                }
+
+                if (target == null) {
+
+                }
+                else {
+                    orbitingCamera.lockOnTarget = target;
+
+                    orbitingCamera.isLockedOn = true;
+                }
+            }
         }
     }
 }
