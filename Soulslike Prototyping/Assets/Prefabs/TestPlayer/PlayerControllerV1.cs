@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerControllerV1 : MonoBehaviour
 {
     CharacterController controller;
-    [SerializeField] OrbitingCamera orbitingCamera;
+    OrbitingCamera orbitingCamera;
 
     //player movement
     Vector3 inputDirection;
@@ -15,20 +15,26 @@ public class PlayerControllerV1 : MonoBehaviour
     [HideInInspector] public Quaternion cameraRotation;
     [HideInInspector] public Transform cameraTransform;
 
-    Vector3 gravityVector = Vector3.zero;
+    public Vector3 gravityVector = Vector3.zero;
     [SerializeField] float gravityFactor = 9.8f;
 
     void Awake()
     {
+        //get components
         controller = GetComponent<CharacterController>();
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+
+        //put self-reference in the globalData player variable
+        GlobalData.global.player = this;
+    }
+
+    void Start()
+    {
+        orbitingCamera = GlobalData.global.orbitingCamera;
     }
 
     void FixedUpdate()
     {
-        gravityVector.y -= gravityFactor * Time.fixedDeltaTime;
-        controller.Move(gravityVector);
+        UpdateGravity();
 
         if (inputDirection != Vector3.zero) {
             //create the global move that the player will use
@@ -42,6 +48,20 @@ public class PlayerControllerV1 : MonoBehaviour
         }
     }
 
+    //update the gravity acting on the player
+    void UpdateGravity() {
+        //if the player is not grounded, then apply gravity
+        if (!controller.isGrounded) {
+            gravityVector.y -= gravityFactor * Time.fixedDeltaTime * Time.fixedDeltaTime;
+            controller.Move(gravityVector);
+        }
+
+        //else reset gravity to 0
+        else {
+            gravityVector.y = 0;
+        }
+    }
+
     void OnMove(InputValue movementValue)
     {
         inputDirection = new Vector3(movementValue.Get<Vector2>().x, 0, movementValue.Get<Vector2>().y);
@@ -50,5 +70,15 @@ public class PlayerControllerV1 : MonoBehaviour
     void OnLook(InputValue lookValue)
     {
         lookDirection = lookValue.Get<Vector2>();   
+    }
+
+    void OnLock()
+    {
+        if (orbitingCamera.isLockedOn) {
+            orbitingCamera.isLockedOn = false;
+        }
+        else {
+            orbitingCamera.isLockedOn = true;
+        }
     }
 }

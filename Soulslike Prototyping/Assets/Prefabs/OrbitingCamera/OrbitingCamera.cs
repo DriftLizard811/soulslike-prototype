@@ -5,10 +5,12 @@ using UnityEngine;
 public class OrbitingCamera : MonoBehaviour
 {
     //object being rotated around
-    public PlayerControllerV1 target;
+    PlayerControllerV1 target;
     [HideInInspector] public Quaternion playerRotation;
 
     [SerializeField] bool clipCamera;
+    public bool isLockedOn = false;
+    public Transform lockOnTarget;
 
     //the speeds at which rotation and elevation are changed
     [SerializeField] float rotationSpeed = 120.0f;
@@ -29,8 +31,20 @@ public class OrbitingCamera : MonoBehaviour
     //the angle at which we're looking down or up at the target
     float elevationToTarget = 0.0f;
 
+    void Awake()
+    {
+        GlobalData.global.orbitingCamera = this;
+    }
+
     void Start()
     {
+        //configure the cursor
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        //fetch player reference from global data
+        target = GlobalData.global.player;
+
         Vector3 angles = transform.eulerAngles;
         rotationAroundTarget = angles.y;
         elevationToTarget = angles.x;
@@ -47,21 +61,44 @@ public class OrbitingCamera : MonoBehaviour
     void LateUpdate()
     {
         if (target) {
-            Vector2 playerLookDirection = GetLookDirection(target);
+            //set up position and rotation variables
+            Vector3 position = Vector3.zero;
+            Quaternion rotation = Quaternion.identity;
 
-            rotationAroundTarget += playerLookDirection.x * rotationSpeed * distance * 0.02f;
-            elevationToTarget -= playerLookDirection.y * elevationSpeed * 0.02f;
+            //if the player is locked on to a target, configure the camera so that it's pointing at the enemy, while still keeping the player in view
+            if (isLockedOn) {
+                //get the angles between the player and the lock on target
+                Vector3 rotationAngles = FindLockOnTargetRotation(target.transform, lockOnTarget);
 
-            //limit elevation to the range
-            elevationToTarget = ClampAngle(elevationToTarget, elevationMinLimit, elevationMaxLimit);
+                Debug.Log(rotationAngles);
 
-            //compute rotation based on these two angles, and compute a player rotation as well
-            Quaternion rotation = Quaternion.Euler(elevationToTarget, rotationAroundTarget, 0);
-            playerRotation = Quaternion.Euler(-90, rotationAroundTarget, 0);
+                //compute rotation based on the rotation angles
+                rotation = Quaternion.Euler(rotationAngles.x, rotationAngles.y, 0);
+                playerRotation = Quaternion.Euler (-90, rotationAngles.y, 0);
 
-            //figure out a position that's distance units away from the target in the reverse direction to what we're looking in
-            Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
-            Vector3 position = rotation * negDistance + target.transform.position;
+                //figure out a position that's distance units away from the target in the reverse direction to what we're looking in
+                Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
+                position = rotation * negDistance + target.transform.position;
+            }
+
+            //if the player is not locked on to a target, adjust camera angle based on player input
+            if (!isLockedOn) {
+                Vector2 playerLookDirection = GetLookDirection(target);
+
+                rotationAroundTarget += playerLookDirection.x * rotationSpeed * distance * 0.02f;
+                elevationToTarget -= playerLookDirection.y * elevationSpeed * 0.02f;
+
+                //limit elevation to the range
+                elevationToTarget = ClampAngle(elevationToTarget, elevationMinLimit, elevationMaxLimit);
+
+                //compute rotation based on these two angles, and compute a player rotation as well
+                rotation = Quaternion.Euler(elevationToTarget, rotationAroundTarget, 0);
+                playerRotation = Quaternion.Euler(-90, rotationAroundTarget, 0);
+
+                //figure out a position that's distance units away from the target in the reverse direction to what we're looking in
+                Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
+                position = rotation * negDistance + target.transform.position;
+            }
 
             //make sure that the camera doesn't clip through walls
             if (clipCamera) {
@@ -98,6 +135,48 @@ public class OrbitingCamera : MonoBehaviour
         else {
             return new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         }
+    }
+
+    Vector3 FindLockOnTargetRotation(Transform origin, Transform target)
+    {
+        //create variables to store the x and y rotations
+        float xRotationValue = 0f;
+        float yRotationValue = 0f;
+
+        //find the x, y, and z components of the vector between origin and target
+        float xComp = Mathf.Abs(origin.position.x - target.position.x);
+        float yComp = Mathf.Abs(origin.position.y - target.position.y);
+        float zComp = Mathf.Abs(origin.position.z - target.position.z);
+
+        //find the angles to store in the rotation values
+        yRotationValue = Mathf.Atan(zComp / xComp);
+        xRotationValue = Mathf.Atan(yComp / (Mathf.Sqrt(xComp * xComp + zComp * zComp)));
+
+        //convert the angles from radians to degrees
+        xRotationValue *= Mathf.Rad2Deg;
+        yRotationValue *= Mathf.Rad2Deg;
+
+        //adjust angles for proper signs
+        if (origin.position.x <= target.position.x && origin.position.z <= target.position.z) {
+            Debug.Log("upperright");
+            yRotationValue -= (-90 + yRotationValue * 2);
+        }
+        else if (origin.position.x > target.position.x && origin.position.z <= target.position.z) {
+            Debug.Log("upperleft");
+            yRotationValue -= 90;
+        }
+        else if (origin.position.x > target.position.x && origin.position.z > target.position.z) {
+            Debug.Log("lowerleft");
+            yRotationValue -= (90 + yRotationValue * 2);
+        }
+        else if (origin.position.x <= target.position.x && origin.position.z > target.position.z) {
+            Debug.Log("lowerright");
+            yRotationValue -= 270;
+        }
+        
+
+        //return the quaternion to properly rotate
+        return new Vector3(xRotationValue, yRotationValue, 0);
     }
 
     public static float ClampAngle(float angle, float min, float max)

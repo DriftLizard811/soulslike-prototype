@@ -118,10 +118,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   orbitingCamera: {fileID: 0}
+  lookDirection: {x: 0, y: 0}
   moveSpeed: 2.5
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraTransform: {fileID: 0}
-  gravityFactor: 9.8
+  gravityVector: {x: 0, y: 0, z: 0}
+  gravityFactor: 10
 --- !u!114 &7985900861829219817
 MonoBehaviour:
   m_ObjectHideFlags: 0
