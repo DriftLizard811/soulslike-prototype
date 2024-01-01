@@ -38,7 +38,6 @@ public class OrbitingCamera : MonoBehaviour
 
     void Awake()
     {
-        GlobalData.global.orbitingCamera = this;
 
         //get the screen width and height
         screenWidth = Screen.width;
@@ -48,6 +47,8 @@ public class OrbitingCamera : MonoBehaviour
 
     void Start()
     {
+        GlobalData.global.orbitingCamera = this;
+
         //configure the cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -134,6 +135,9 @@ public class OrbitingCamera : MonoBehaviour
 
             //update the player rotation
             target.cameraRotation = playerRotation;
+        }
+        else {
+            target = target = GlobalData.global.player;
         }
     }
 

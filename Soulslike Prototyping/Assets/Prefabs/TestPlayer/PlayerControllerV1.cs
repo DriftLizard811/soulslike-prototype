@@ -6,14 +6,14 @@ using UnityEngine.InputSystem;
 public class PlayerControllerV1 : MonoBehaviour
 {
     CharacterController controller;
-    OrbitingCamera orbitingCamera;
+    public OrbitingCamera orbitingCamera;
 
     //player movement
     Vector3 inputDirection;
     [HideInInspector] public Vector2 lookDirection;
     [SerializeField] float moveSpeed = 3f;
     [HideInInspector] public Quaternion cameraRotation;
-    [HideInInspector] public Transform cameraTransform;
+    public Transform cameraTransform;
 
     public Vector3 gravityVector = Vector3.zero;
     [SerializeField] float gravityFactor = 9.8f;
@@ -23,20 +23,32 @@ public class PlayerControllerV1 : MonoBehaviour
         //get components
         controller = GetComponent<CharacterController>();
 
-        //put self-reference in the globalData player variable
-        GlobalData.global.player = this;
     }
 
     void Start()
     {
+        //put self-reference in the globalData player variable
+        GlobalData.global.player = this;
+        
         orbitingCamera = GlobalData.global.orbitingCamera;
+    }
+
+    void LateUpdate()
+    {
+        if (orbitingCamera == null) {
+            orbitingCamera = GlobalData.global.orbitingCamera;
+            cameraTransform = orbitingCamera.transform;
+        }
+        else if (cameraTransform == null) {
+            cameraTransform = orbitingCamera.transform;
+        }
     }
 
     void FixedUpdate()
     {
         UpdateGravity();
 
-        if (inputDirection != Vector3.zero) {
+        if (inputDirection != Vector3.zero && orbitingCamera != null) {
             //create the global move that the player will use
             Vector3 moveDirection = inputDirection.x * cameraTransform.right + inputDirection.z * cameraTransform.forward;
             
