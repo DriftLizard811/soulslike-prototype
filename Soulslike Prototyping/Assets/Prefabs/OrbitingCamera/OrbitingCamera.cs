@@ -36,6 +36,10 @@ public class OrbitingCamera : MonoBehaviour
     //the angle at which we're looking down or up at the target
     float elevationToTarget = 0.0f;
 
+    //the last rotations
+    Vector3 lastPosition = Vector3.zero;
+    Quaternion lastRotation = Quaternion.identity;
+
     void Awake()
     {
 
@@ -73,8 +77,8 @@ public class OrbitingCamera : MonoBehaviour
     {
         if (target) {
             //set up position and rotation variables
-            Vector3 position = Vector3.zero;
-            Quaternion rotation = Quaternion.identity;
+            Vector3 position = lastPosition;
+            Quaternion rotation = lastRotation;
 
             //if the player is locked on to a target, configure the camera so that it's pointing at the enemy, while still keeping the player in view
             if (isLockedOn) {
@@ -132,6 +136,9 @@ public class OrbitingCamera : MonoBehaviour
             //update position and rotation
             transform.position = position;
             transform.rotation = rotation;
+
+            lastPosition = position;
+            lastRotation = rotation;
 
             //update the player rotation
             target.cameraRotation = playerRotation;
