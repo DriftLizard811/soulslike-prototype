@@ -78,7 +78,8 @@ public class PlayerControllerV1 : MonoBehaviour
     bool IsPointOnScreen(Vector3 point)
     {
         var screenPoint = Camera.main.WorldToScreenPoint(point);
-        if (screenPoint.x >= 0 && screenPoint.x <= orbitingCamera.screenWidth && screenPoint.y >= 0 && screenPoint.y <= orbitingCamera.screenHeight) {
+        Debug.Log(screenPoint);
+        if (screenPoint.x >= 0 && screenPoint.x <= orbitingCamera.screenWidth && screenPoint.y >= 0 && screenPoint.y <= orbitingCamera.screenHeight && screenPoint.z >= 0) {
             return true;
         }
         else {
@@ -99,6 +100,7 @@ public class PlayerControllerV1 : MonoBehaviour
     void OnLock()
     {
         if (orbitingCamera.isLockedOn) {
+            //turn off lock on
             orbitingCamera.isLockedOn = false;
         }
         else {
@@ -106,6 +108,7 @@ public class PlayerControllerV1 : MonoBehaviour
                 List<EnemyTag> globalEnemyList = GlobalData.global.enemyList;
                 Transform target = null;
 
+                //pick which enemy to lock on to
                 for (int i = 0; i < globalEnemyList.Count; i++) {
                     if (IsPointOnScreen(globalEnemyList[i].transform.position)) {
                         if (target == null) {
