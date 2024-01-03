@@ -5,7 +5,7 @@ using UnityEngine;
 public class AttackHitbox : MonoBehaviour
 {
     [SerializeField] string targetTag;
-    [SerializeField] Color displayColor;
+    [SerializeField] int damageAmount;
     BoxCollider bc;
     MeshRenderer mr;
 
@@ -20,19 +20,30 @@ public class AttackHitbox : MonoBehaviour
     public void EnabledAttack()
     {
         bc.enabled = true;
-        mr.enabled = true;
+        if (GlobalData.global.showHitboxes) {
+            mr.enabled = true;
+        }
     }
 
     public void DisableAttack()
     {
         bc.enabled = false;
-        mr.enabled = false;
+        if (GlobalData.global.showHitboxes) {
+            mr.enabled = false;
+        }
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == targetTag) {
-            Debug.Log("HIT");
+            var otherStats = other.GetComponentInParent<CharacterStats>();
+
+            if (otherStats != null) {
+                otherStats.currentHP -= damageAmount;
+            }
+            else {
+                Debug.LogError("Couldn't find CharacterStats component in collided object");
+            }
         }
     }
 }

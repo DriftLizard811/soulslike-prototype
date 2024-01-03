@@ -2025,7 +2025,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5011571372891338714, guid: 262bfeae376fcf449a59f622c3a245c3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.72
+      value: 3.25
       objectReference: {fileID: 0}
     - target: {fileID: 5011571372891338714, guid: 262bfeae376fcf449a59f622c3a245c3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2447,7 +2447,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5011571372891338714, guid: 262bfeae376fcf449a59f622c3a245c3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.08
+      value: 5.6099997
       objectReference: {fileID: 0}
     - target: {fileID: 5011571372891338714, guid: 262bfeae376fcf449a59f622c3a245c3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2861,6 +2861,7 @@ MonoBehaviour:
   player: {fileID: 0}
   orbitingCamera: {fileID: 0}
   enemyList: []
+  showHitboxes: 1
 --- !u!4 &1960755355
 Transform:
   m_ObjectHideFlags: 0
@@ -3056,7 +3057,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2549721245248869938, guid: 733abc7609a127742972dd4e825e45fe, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.17
+      value: 2.14
       objectReference: {fileID: 0}
     - target: {fileID: 2549721245248869938, guid: 733abc7609a127742972dd4e825e45fe, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3094,6 +3095,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RiotTrollV1
       objectReference: {fileID: 0}
+    - target: {fileID: 2894052430643924104, guid: 733abc7609a127742972dd4e825e45fe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6445648378974938637, guid: 733abc7609a127742972dd4e825e45fe, type: 3}
       propertyPath: player
       value: 
@@ -3121,7 +3126,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8258784840759928872, guid: ce791ba552105164aa3269eb89fba5a7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 2.2
       objectReference: {fileID: 0}
     - target: {fileID: 8258784840759928872, guid: ce791ba552105164aa3269eb89fba5a7, type: 3}
       propertyPath: m_LocalPosition.z

@@ -8,6 +8,9 @@ public class PlayerControllerV1 : MonoBehaviour
     CharacterController controller;
     public OrbitingCamera orbitingCamera;
 
+    //get stats component
+    [HideInInspector] public CharacterStats stats;
+
     //player movement
     Vector3 inputDirection;
     [HideInInspector] public Vector2 lookDirection;
@@ -22,7 +25,7 @@ public class PlayerControllerV1 : MonoBehaviour
     {
         //get components
         controller = GetComponent<CharacterController>();
-
+        stats = GetComponent<CharacterStats>();
     }
 
     void Start()
@@ -51,9 +54,10 @@ public class PlayerControllerV1 : MonoBehaviour
         if (inputDirection != Vector3.zero && orbitingCamera != null) {
             //create the global move that the player will use
             Vector3 moveDirection = inputDirection.x * cameraTransform.right + inputDirection.z * cameraTransform.forward;
-            
+            moveDirection.y = 0;
+
             //move the player
-            controller.Move(moveDirection * moveSpeed * Time.fixedDeltaTime);
+            controller.Move(moveDirection.normalized * moveSpeed * Time.fixedDeltaTime);
 
             //rotate so that the player's back is to the camera
             transform.rotation = orbitingCamera.playerRotation;

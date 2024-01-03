@@ -37,7 +37,18 @@ public class RiotTrollController : MonoBehaviour
             PickWalkAnimation();
 
             //see if an attack should be performed
-            if (Vector3.Distance(transform.position, player.transform.position) <= 3f && Vector3.Distance(transform.position, player.transform.position) > 2.5f) {
+            
+            //see if the player is behind the enemy
+            RaycastHit backHitInfo;
+            var backRay = new Ray(transform.position - transform.up, (-transform.forward).normalized);
+            var backHit = Physics.Raycast(backRay, out backHitInfo, 8f);
+            if (backHit) {
+                animator.SetBool("isBackswing", true);
+                currentState = riotTrollStates.backswing;
+            }
+
+            //if not, proceed to normal attacks
+            else if (Vector3.Distance(transform.position, player.transform.position) <= 3f && Vector3.Distance(transform.position, player.transform.position) > 2.5f) {
                 //Debug.Log("swing activated");
                 animator.SetBool("isSwing", true);
                 currentState = riotTrollStates.swing;
@@ -50,13 +61,6 @@ public class RiotTrollController : MonoBehaviour
         else {
             //stop the enemy from moving
             agent.SetDestination(transform.position);
-
-            //get the hitbox that matches the attack
-            int hitboxToActivate = 0;
-            hitboxToActivate = (int) currentState;
-
-            //activate that hitbox
-            attackHitboxes[hitboxToActivate].EnabledAttack();
         }
     }
 
@@ -65,6 +69,26 @@ public class RiotTrollController : MonoBehaviour
         if (agent.destination != transform.position) {
             animator.SetBool("isWalking", true);
         }
+    }
+
+    public void ActivateAttackHitbox()
+    {
+        //get the hitbox that matches the attack
+        int hitboxToActivate = 0;
+        hitboxToActivate = (int) currentState;
+
+        //activate that hitbox
+        attackHitboxes[hitboxToActivate].EnabledAttack();
+    }
+
+    public void DeactivateAttackHitbox()
+    {
+        //get the hitbox that matches the attack
+        int hitboxToActivate = 0;
+        hitboxToActivate = (int) currentState;
+
+        //activate that hitbox
+        attackHitboxes[hitboxToActivate].DisableAttack();
     }
 
     public void ReturnToIdleState()
