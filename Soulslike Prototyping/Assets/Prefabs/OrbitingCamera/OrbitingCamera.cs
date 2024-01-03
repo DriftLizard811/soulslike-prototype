@@ -15,6 +15,7 @@ public class OrbitingCamera : MonoBehaviour
 
     [SerializeField] bool clipCamera;
     public bool isLockedOn = false;
+    public bool canRotateCamera = true;
     public Transform lockOnTarget;
 
     //the speeds at which rotation and elevation are changed
@@ -89,7 +90,7 @@ public class OrbitingCamera : MonoBehaviour
 
                 //compute rotation based on the rotation angles
                 rotation = Quaternion.Euler(rotationAngles.x, rotationAngles.y, 0);
-                playerRotation = Quaternion.Euler (-90, rotationAngles.y, 0);
+                playerRotation = Quaternion.Euler (0, rotationAngles.y, 0);
 
                 //figure out a position that's distance units away from the target in the reverse direction to what we're looking in
                 Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
@@ -100,15 +101,17 @@ public class OrbitingCamera : MonoBehaviour
             if (!isLockedOn) {
                 Vector2 playerLookDirection = GetLookDirection(target);
 
-                rotationAroundTarget += playerLookDirection.x * rotationSpeed * distance * 0.02f;
-                elevationToTarget -= playerLookDirection.y * elevationSpeed * 0.02f;
+                if (canRotateCamera) {
+                    rotationAroundTarget += playerLookDirection.x * rotationSpeed * distance * 0.02f;
+                    elevationToTarget -= playerLookDirection.y * elevationSpeed * 0.02f;
+                }
 
                 //limit elevation to the range
                 elevationToTarget = ClampAngle(elevationToTarget, elevationMinLimit, elevationMaxLimit);
 
                 //compute rotation based on these two angles, and compute a player rotation as well
                 rotation = Quaternion.Euler(elevationToTarget, rotationAroundTarget, 0);
-                playerRotation = Quaternion.Euler(-90, rotationAroundTarget, 0);
+                playerRotation = Quaternion.Euler(0, rotationAroundTarget, 0);
 
                 //figure out a position that's distance units away from the target in the reverse direction to what we're looking in
                 Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);

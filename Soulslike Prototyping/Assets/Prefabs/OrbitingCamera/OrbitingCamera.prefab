@@ -106,6 +106,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerRotation: {x: 0, y: 0, z: 0, w: 0}
+  screenWidth: 0
+  screenHeight: 0
+  screenCenter: {x: 0, y: 0}
   clipCamera: 1
   isLockedOn: 0
   lockOnTarget: {fileID: 0}
@@ -113,6 +116,6 @@ MonoBehaviour:
   elevationSpeed: 6
   elevationMinLimit: -20
   elevationMaxLimit: 80
-  distance: 5
+  distance: 7
   distanceMin: 0.5
   distanceMax: 15
