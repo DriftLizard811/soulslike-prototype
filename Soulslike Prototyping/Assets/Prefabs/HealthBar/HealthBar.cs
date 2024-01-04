@@ -34,15 +34,17 @@ public class HealthBar : MonoBehaviour
 
     void LateUpdate()
     {
-        if (orbitingCamera == null) {
-            orbitingCamera = GlobalData.global.orbitingCamera;
-        }
-        if (orbitingCamera != null) {
-            if (type == displayType.health) {
-                textBox.text = string.Format("{0}: {1}/{2}", entity.name, entityStats.currentHP, entityStats.maxHP);
+        if (entity != null) {
+            if (orbitingCamera == null) {
+                orbitingCamera = GlobalData.global.orbitingCamera;
             }
-            else if (type == displayType.stamina) {
-                textBox.text = string.Format("{0}: {1}/{2}", entity.name, entityStats.currentStamina, entityStats.maxStamina);
+            if (orbitingCamera != null) {
+                if (type == displayType.health) {
+                    textBox.text = string.Format("{0}: {1}/{2}", entity.name, entityStats.currentHP, entityStats.maxHP);
+                }
+                else if (type == displayType.stamina) {
+                    textBox.text = string.Format("{0}: {1}/{2}", entity.name, entityStats.currentStamina, entityStats.maxStamina);
+                }
             }
         }
     }

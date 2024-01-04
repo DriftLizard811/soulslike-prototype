@@ -83,18 +83,23 @@ public class OrbitingCamera : MonoBehaviour
 
             //if the player is locked on to a target, configure the camera so that it's pointing at the enemy, while still keeping the player in view
             if (isLockedOn) {
-                //get the angles between the player and the lock on target
-                Vector3 rotationAngles = FindLockOnTargetRotation(target.transform, lockOnTarget);
+                if (lockOnTarget == null) {
+                    isLockedOn = false;
+                }
+                else {
+                    //get the angles between the player and the lock on target
+                    Vector3 rotationAngles = FindLockOnTargetRotation(target.transform, lockOnTarget);
 
-                //Debug.Log(rotationAngles);
+                    //Debug.Log(rotationAngles);
 
-                //compute rotation based on the rotation angles
-                rotation = Quaternion.Euler(rotationAngles.x, rotationAngles.y, 0);
-                playerRotation = Quaternion.Euler (0, rotationAngles.y, 0);
+                    //compute rotation based on the rotation angles
+                    rotation = Quaternion.Euler(rotationAngles.x, rotationAngles.y, 0);
+                    playerRotation = Quaternion.Euler (0, rotationAngles.y, 0);
 
-                //figure out a position that's distance units away from the target in the reverse direction to what we're looking in
-                Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
-                position = rotation * negDistance + target.transform.position;
+                    //figure out a position that's distance units away from the target in the reverse direction to what we're looking in
+                    Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
+                    position = rotation * negDistance + target.transform.position;
+                }
             }
 
             //if the player is not locked on to a target, adjust camera angle based on player input
