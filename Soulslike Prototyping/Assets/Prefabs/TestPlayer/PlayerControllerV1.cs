@@ -21,7 +21,11 @@ public class PlayerControllerV1 : MonoBehaviour
     public Transform cameraTransform;
 
     //sidestep variables
-    Vector3 sidestepDirection = Vector3.zero;
+    Vector3 dodgeDirection = Vector3.zero;
+
+    //damaged variable
+    [SerializeField] float damagedSpeed = 6f;
+    Vector3 damagedDirection = Vector3.zero;
 
     //gravity tracking variables
     public Vector3 gravityVector = Vector3.zero;
@@ -31,12 +35,14 @@ public class PlayerControllerV1 : MonoBehaviour
     public enum playerStates
     {
         neutral,
-        swing,
+        stab,
         sidestep,
         roll,
         damaged
     }
-    playerStates currentState = playerStates.neutral;
+    [HideInInspector] public playerStates currentState = playerStates.neutral;
+
+    [SerializeField] List<AttackHitbox> attackHitboxes = new List<AttackHitbox>();
 
     void Awake()
     {
@@ -89,19 +95,23 @@ public class PlayerControllerV1 : MonoBehaviour
                 animator.SetBool("isWalking", false);
             }
         }
-        if (currentState == playerStates.sidestep) {
-            if (orbitingCamera.isLockedOn) {
-                Vector3 moveDirection = inputDirection.x * cameraTransform.right + inputDirection.z * cameraTransform.forward;
-                moveDirection.y = 0;
+        else if (currentState == playerStates.sidestep) {
+            Vector3 moveDirection = inputDirection.x * cameraTransform.right + inputDirection.z * cameraTransform.forward;
+            moveDirection.y = 0;
 
-                controller.Move(moveDirection.normalized * sidestepSpeed * Time.fixedDeltaTime);
+            controller.Move(moveDirection.normalized * sidestepSpeed * Time.fixedDeltaTime);
 
-                //rotate player to keep back to camera
-                transform.rotation = orbitingCamera.playerRotation;
-            }
-            else {
-                controller.Move(sidestepDirection * sidestepSpeed * Time.fixedDeltaTime);
-            }
+            //rotate player to keep back to camera
+            transform.rotation = orbitingCamera.playerRotation;
+        }
+        else if (currentState == playerStates.roll) {
+            controller.Move(dodgeDirection * sidestepSpeed * Time.fixedDeltaTime);
+        }
+        else if (currentState == playerStates.stab) {
+
+        }
+        else if (currentState == playerStates.damaged) {
+            controller.Move(damagedDirection * damagedSpeed * Time.fixedDeltaTime);
         }
     }
 
@@ -117,6 +127,40 @@ public class PlayerControllerV1 : MonoBehaviour
         else {
             gravityVector.y = 0;
         }
+    }
+
+    //enable/disable attack hitboxes
+    public void EnableAttack()
+    {
+        int hitboxIndex = (int) currentState;
+        Debug.Log(hitboxIndex);
+
+        if (attackHitboxes[hitboxIndex] != null) {
+            attackHitboxes[hitboxIndex].EnabledAttack();
+        }
+    }
+    public void DisableAttack()
+    {
+        int hitboxIndex = (int) currentState;
+
+        if (attackHitboxes[hitboxIndex] != null) {
+            attackHitboxes[hitboxIndex].DisableAttack();
+        }
+    }
+
+    //initiate taking damage
+    public void TakeDamage(Vector3 direction) {
+        //play animation
+        animator.SetBool("isDamaged", true);
+
+        //set damaged direction
+        damagedDirection = direction;
+
+        //lock camera
+        orbitingCamera.canRotateCamera = false;
+
+        //change state
+        currentState = playerStates.damaged;
     }
 
     //determines if a screen point is on screen
@@ -137,14 +181,33 @@ public class PlayerControllerV1 : MonoBehaviour
     {
         //turn off any actions
         animator.SetBool("isSidestep", false);
+        animator.SetBool("isRoll", false);
+        animator.SetBool("isStab", false);
+        animator.SetBool("isDamaged", false);
 
-        //turn off hitboxes
+        //turn off any attack hitboxes
+        for (int i = 0; i < attackHitboxes.Count; i++) {
+            if (attackHitboxes[i] != null) {
+                attackHitboxes[i].DisableAttack();
+            }
+        }
 
         //re-enable camera moving
         orbitingCamera.canRotateCamera = true;
 
         //return state to neutral
         currentState = playerStates.neutral;
+    }
+
+    //toggle invincibility
+    public void EnableInvincibility()
+    {
+        stats.isInvincible = true;
+    }
+
+    public void DisableInvincibility()
+    {
+        stats.isInvincible = false;
     }
 
     void OnMove(InputValue movementValue)
@@ -201,20 +264,50 @@ public class PlayerControllerV1 : MonoBehaviour
 
     void OnDodge()
     {
-        if (inputDirection != Vector3.zero) {
-            //play animation
-            animator.SetBool("isSidestep", true);
+        if (currentState == playerStates.neutral && stats.currentStamina >= 15) {
+            //decrease stamina
+            stats.currentStamina -= 15;
 
-            //get sidestep direction
-            sidestepDirection = inputDirection.x * cameraTransform.right + inputDirection.z * cameraTransform.forward;
-            sidestepDirection.y = 0;
-            sidestepDirection = sidestepDirection.normalized;
+            if (inputDirection != Vector3.zero && orbitingCamera.isLockedOn) {
+                //play animation
+                animator.SetBool("isSidestep", true);
 
-            //enter sidestep state
-            currentState = playerStates.sidestep;
+                //enter sidestep state
+                currentState = playerStates.sidestep;
+            }
+            else if (inputDirection != Vector3.zero && !orbitingCamera.isLockedOn) {
+                //play animation
+                animator.SetBool("isRoll", true);
 
-            //disable rotating camera ability
-            orbitingCamera.canRotateCamera = false;
+                //get dodge direction
+                dodgeDirection = inputDirection.x * cameraTransform.right + inputDirection.z * cameraTransform.forward;
+                dodgeDirection.y = 0;
+                dodgeDirection = dodgeDirection.normalized;
+
+                //disable rotating camera ability
+                orbitingCamera.canRotateCamera = false;
+
+                //enter roll state
+                currentState = playerStates.roll;
+            }
         }
+    }
+
+    void OnPrimary()
+    {
+        if (currentState == playerStates.neutral && stats.currentStamina >= 10) {
+            //decrease stamina
+            stats.currentStamina -= 10;
+
+            //play animation
+            animator.SetBool("isStab", true);
+
+            //disable camera rotation
+            orbitingCamera.canRotateCamera = false;
+
+            //enter stab state
+            currentState = playerStates.stab;
+        }
+
     }
 }

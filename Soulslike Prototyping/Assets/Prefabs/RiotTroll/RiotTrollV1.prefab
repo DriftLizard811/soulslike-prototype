@@ -218,6 +218,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RiotTrollV1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 662182f63c1ff0949a0a10b6e4e39235, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 2517164812174280909, guid: 662182f63c1ff0949a0a10b6e4e39235, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 1.3073287
@@ -300,6 +304,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 662182f63c1ff0949a0a10b6e4e39235, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9150684508056426818}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 662182f63c1ff0949a0a10b6e4e39235, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6886857927934401986}
   m_SourcePrefab: {fileID: 100100000, guid: 662182f63c1ff0949a0a10b6e4e39235, type: 3}
 --- !u!4 &2549721245248869938 stripped
 Transform:
@@ -411,6 +418,21 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &6886857927934401986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2894052430643924104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b6d1013869ebf8469dc6e3e3c2c80f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 50
+  currentHP: 0
+  isInvincible: 0
 --- !u!1001 &4645061652435597040
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ public class RiotTrollController : MonoBehaviour
 {
     Animator animator;
     NavMeshAgent agent;
+    CharacterStats stats;
     [SerializeField] PlayerControllerV1 player;
 
     [SerializeField] List<AttackHitbox> attackHitboxes = new List<AttackHitbox>();
@@ -25,11 +26,14 @@ public class RiotTrollController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
+        stats = GetComponent<CharacterStats>();
         currentState = riotTrollStates.neutral;
     }
 
     void FixedUpdate()
     {
+        CheckHealth();
+
         if (currentState == riotTrollStates.neutral) {
             //move the troll towards the player
             agent.SetDestination(player.transform.position);
@@ -61,6 +65,13 @@ public class RiotTrollController : MonoBehaviour
         else {
             //stop the enemy from moving
             agent.SetDestination(transform.position);
+        }
+    }
+
+    void CheckHealth()
+    {
+        if (stats.currentHP <= 0) {
+            Destroy(gameObject);
         }
     }
 
