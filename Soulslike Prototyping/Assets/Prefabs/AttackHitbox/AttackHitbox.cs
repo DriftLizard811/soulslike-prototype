@@ -35,13 +35,13 @@ public class AttackHitbox : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == targetTag) {
+        if (other.tag == targetTag && other.GetType() == typeof(CharacterController)) {
             var otherStats = other.GetComponentInParent<CharacterStats>();
 
             if (otherStats != null) {
                 if (!otherStats.isInvincible) {
                     otherStats.currentHP -= damageAmount;
-                    if (other.tag == "Player") {
+                    if (other.tag == "Player" && targetTag == "Player") {
                         var playerScript = other.GetComponentInParent<PlayerControllerV1>();
                         playerScript.ReturnToIdleState();
                         playerScript.TakeDamage((other.transform.position - transform.position).normalized);

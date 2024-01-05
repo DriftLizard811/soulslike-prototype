@@ -11,7 +11,7 @@ public class CharacterStats : MonoBehaviour
 
     public float maxStamina;
     public float currentStamina;
-    float staminaPerFrame = 0.1f;
+    float staminaPerFrame = 0.2f;
 
     void Awake()
     {
