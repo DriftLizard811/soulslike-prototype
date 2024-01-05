@@ -10,6 +10,9 @@ public class RiotTrollControllerV2 : MonoBehaviour
     CharacterStats stats;
     [SerializeField] PlayerControllerV1 player;
 
+    [SerializeField] float walkSpeed = 2.5f;
+    [SerializeField] float runSpeed = 5;
+
     [SerializeField] List<AttackHitbox> attackHitboxes = new List<AttackHitbox>();
 
     public enum riotTrollStates
@@ -17,7 +20,8 @@ public class RiotTrollControllerV2 : MonoBehaviour
         neutral = 0,
         swing = 1,
         backswing = 2,
-        bash = 3
+        bash = 3,
+        smash = 4
     }
 
     public riotTrollStates currentState = riotTrollStates.neutral;
@@ -50,17 +54,32 @@ public class RiotTrollControllerV2 : MonoBehaviour
             vectorToPlayer.Normalize();
             float angleToPlayer = Vector3.Angle(transform.forward, vectorToPlayer);
 
-            if (angleToPlayer <= 20 && distanceToPlayer < 4f) {
+            if (angleToPlayer <= 20 && distanceToPlayer < 4f && stats.currentStamina >= 15) {
+                stats.currentStamina -= 15;
+
                 animator.SetBool("isBash", true);
                 currentState = riotTrollStates.bash;
             }
-            else if (angleToPlayer > 20 && angleToPlayer <= 40 && distanceToPlayer < 4f) {
+            else if (angleToPlayer > 20 && angleToPlayer <= 40 && distanceToPlayer < 3.5f && stats.currentStamina >= 10) {
+                stats.currentStamina -= 10;
+
                 animator.SetBool("isSwing", true);
                 currentState = riotTrollStates.swing;
             }
-            else if (angleToPlayer > 160 && distanceToPlayer < 4f) {
+            else if (angleToPlayer > 140 && distanceToPlayer < 4f && stats.currentStamina >= 20) {
+                stats.currentStamina -= 20;
+
                 animator.SetBool("isBackswing", true);
                 currentState = riotTrollStates.backswing;
+            }
+            else if (distanceToPlayer < 4f && stats.currentStamina >= 30) {
+                stats.currentStamina -= 30;
+
+                animator.SetBool("isSmash", true);
+                currentState = riotTrollStates.smash;
+            }
+            else {
+                
             }
         }
         else {
@@ -79,7 +98,16 @@ public class RiotTrollControllerV2 : MonoBehaviour
     void PickWalkAnimation()
     {
         if (agent.destination != transform.position) {
-            animator.SetBool("isWalking", true);
+            if (Vector3.Distance(transform.position, player.transform.position) > 6f) {
+                animator.SetBool("isWalking", false);
+                animator.SetBool("isRunning", true);
+                agent.speed = runSpeed;
+            }
+            else {
+                animator.SetBool("isWalking", true);
+                animator.SetBool("isRunning", false);
+                agent.speed = walkSpeed;
+            }
         }
     }
 
@@ -109,6 +137,7 @@ public class RiotTrollControllerV2 : MonoBehaviour
         animator.SetBool("isSwing", false);
         animator.SetBool("isBackswing", false);
         animator.SetBool("isBash", false);
+        animator.SetBool("isSmash", false);
 
         //turn off any attack hitboxes
         for (int i = 0; i < attackHitboxes.Count; i++) {

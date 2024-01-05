@@ -84,12 +84,12 @@ public class PlayerControllerV1 : MonoBehaviour
                 moveDirection.Normalize();
 
                 //move the player
-                bool success = TryMove(moveDirection, moveSpeed * Time.fixedDeltaTime + enemyCollisionOffset);
+                bool success = TryMove(moveDirection, moveSpeed * Time.fixedDeltaTime + enemyCollisionOffset, moveSpeed);
                 if (!success) {
-                    success = TryMove(new Vector3(moveDirection.x, 0, 0), moveSpeed * Time.fixedDeltaTime + enemyCollisionOffset);
+                    success = TryMove(new Vector3(moveDirection.x, 0, 0), moveSpeed * Time.fixedDeltaTime + enemyCollisionOffset, moveSpeed);
 
                     if (!success) {
-                        TryMove(new Vector3(0, 0, moveDirection.z), moveSpeed * Time.fixedDeltaTime + enemyCollisionOffset);
+                        TryMove(new Vector3(0, 0, moveDirection.z), moveSpeed * Time.fixedDeltaTime + enemyCollisionOffset, moveSpeed);
                     }
                 }
                 
@@ -110,24 +110,24 @@ public class PlayerControllerV1 : MonoBehaviour
             moveDirection.y = 0;
             moveDirection.Normalize();
 
-            TryMove(moveDirection, sidestepSpeed * Time.fixedDeltaTime + enemyCollisionOffset);
+            TryMove(moveDirection, sidestepSpeed * Time.fixedDeltaTime + enemyCollisionOffset, sidestepSpeed);
 
             //rotate player to keep back to camera
             transform.rotation = orbitingCamera.playerRotation;
         }
         else if (currentState == playerStates.roll) {
-            TryMove(dodgeDirection, sidestepSpeed * Time.fixedDeltaTime + enemyCollisionOffset);
+            TryMove(dodgeDirection, sidestepSpeed * Time.fixedDeltaTime + enemyCollisionOffset, sidestepSpeed);
         }
         else if (currentState == playerStates.stab) {
 
         }
         else if (currentState == playerStates.damaged) {
-            TryMove(damagedDirection, damagedSpeed * Time.fixedDeltaTime + enemyCollisionOffset);
+            TryMove(damagedDirection, damagedSpeed * Time.fixedDeltaTime + enemyCollisionOffset, damagedSpeed);
         }
     }
 
     //checks to make sure that the player isn't running into an enemy
-    bool TryMove(Vector3 direction, float distance)
+    bool TryMove(Vector3 direction, float distance, float speed)
     {
         //Debug.Log(distance);
         RaycastHit hitInfo;
@@ -140,12 +140,12 @@ public class PlayerControllerV1 : MonoBehaviour
                 return false;
             }
             else {
-                controller.Move(direction * moveSpeed * Time.fixedDeltaTime);
+                controller.Move(direction * speed * Time.fixedDeltaTime);
                 return true;
             }
         }
         else {
-            controller.Move(direction * moveSpeed * Time.fixedDeltaTime);
+            controller.Move(direction * speed * Time.fixedDeltaTime);
             return true;
         }
     }
