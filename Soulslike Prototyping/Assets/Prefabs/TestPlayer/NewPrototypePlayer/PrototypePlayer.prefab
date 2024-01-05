@@ -551,6 +551,7 @@ MonoBehaviour:
   stats: {fileID: 0}
   lookDirection: {x: 0, y: 0}
   moveSpeed: 3
+  enemyCollisionOffset: 4
   sidestepSpeed: 6
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraTransform: {fileID: 0}

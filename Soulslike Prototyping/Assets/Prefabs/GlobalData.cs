@@ -22,7 +22,7 @@ public class GlobalData : MonoBehaviour
     void FixedUpdate()
     {
         if (player.stats.currentHP <= 0) {
-            SceneManager.LoadScene("SampleScene");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
 }

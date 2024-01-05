@@ -16,6 +16,7 @@ public class PlayerControllerV1 : MonoBehaviour
     Vector3 inputDirection;
     [HideInInspector] public Vector2 lookDirection;
     [SerializeField] float moveSpeed = 3f;
+    [SerializeField] float enemyCollisionOffset = 0.5f;
     [SerializeField] float sidestepSpeed = 6f;
     [HideInInspector] public Quaternion cameraRotation;
     public Transform cameraTransform;
@@ -80,9 +81,18 @@ public class PlayerControllerV1 : MonoBehaviour
                 //create the global move that the player will use
                 Vector3 moveDirection = inputDirection.x * cameraTransform.right + inputDirection.z * cameraTransform.forward;
                 moveDirection.y = 0;
+                moveDirection.Normalize();
 
                 //move the player
-                controller.Move(moveDirection.normalized * moveSpeed * Time.fixedDeltaTime);
+                bool success = TryMove(moveDirection, moveSpeed * Time.fixedDeltaTime + enemyCollisionOffset);
+                if (!success) {
+                    success = TryMove(new Vector3(moveDirection.x, 0, 0), moveSpeed * Time.fixedDeltaTime + enemyCollisionOffset);
+
+                    if (!success) {
+                        TryMove(new Vector3(0, 0, moveDirection.z), moveSpeed * Time.fixedDeltaTime + enemyCollisionOffset);
+                    }
+                }
+                
 
                 //animate walk
                 animator.SetBool("isWalking", true);
@@ -98,20 +108,45 @@ public class PlayerControllerV1 : MonoBehaviour
         else if (currentState == playerStates.sidestep) {
             Vector3 moveDirection = inputDirection.x * cameraTransform.right + inputDirection.z * cameraTransform.forward;
             moveDirection.y = 0;
+            moveDirection.Normalize();
 
-            controller.Move(moveDirection.normalized * sidestepSpeed * Time.fixedDeltaTime);
+            TryMove(moveDirection, sidestepSpeed * Time.fixedDeltaTime + enemyCollisionOffset);
 
             //rotate player to keep back to camera
             transform.rotation = orbitingCamera.playerRotation;
         }
         else if (currentState == playerStates.roll) {
-            controller.Move(dodgeDirection * sidestepSpeed * Time.fixedDeltaTime);
+            TryMove(dodgeDirection, sidestepSpeed * Time.fixedDeltaTime + enemyCollisionOffset);
         }
         else if (currentState == playerStates.stab) {
 
         }
         else if (currentState == playerStates.damaged) {
-            controller.Move(damagedDirection * damagedSpeed * Time.fixedDeltaTime);
+            TryMove(damagedDirection, damagedSpeed * Time.fixedDeltaTime + enemyCollisionOffset);
+        }
+    }
+
+    //checks to make sure that the player isn't running into an enemy
+    bool TryMove(Vector3 direction, float distance)
+    {
+        //Debug.Log(distance);
+        RaycastHit hitInfo;
+        var moveRay = new Ray(transform.position, direction);
+        var moveHit = Physics.Raycast(moveRay, out hitInfo, distance);
+
+        Debug.Log(hitInfo.distance);
+        if (hitInfo.collider != null) {
+            if (hitInfo.collider.tag == "Enemy") {
+                return false;
+            }
+            else {
+                controller.Move(direction * moveSpeed * Time.fixedDeltaTime);
+                return true;
+            }
+        }
+        else {
+            controller.Move(direction * moveSpeed * Time.fixedDeltaTime);
+            return true;
         }
     }
 

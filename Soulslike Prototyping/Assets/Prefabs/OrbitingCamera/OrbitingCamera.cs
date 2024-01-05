@@ -136,7 +136,7 @@ public class OrbitingCamera : MonoBehaviour
                 var hit = Physics.Raycast(ray, out hitInfo, distance);
 
                 //if there was a hit, adjust the position to reflect that
-                if (hit) {
+                if (hit && hitInfo.collider.tag != "Enemy" && hitInfo.collider.tag != "Attack" && hitInfo.collider.tag != "Player") {
                     position = hitInfo.point;
                 }
             }

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6698685827405264531}
   m_Layer: 2
   m_Name: AttackHitbox
-  m_TagString: Untagged
+  m_TagString: Attack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -119,4 +119,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTag: 
-  displayColor: {r: 0, g: 0, b: 0, a: 0}
+  damageAmount: 0
