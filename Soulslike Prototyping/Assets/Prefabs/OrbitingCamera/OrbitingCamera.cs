@@ -32,7 +32,7 @@ public class OrbitingCamera : MonoBehaviour
     [SerializeField] float distanceMax = 15f;
 
     //angle at which we're rotated around the target
-    float rotationAroundTarget = 0.0f;
+    [HideInInspector] public float rotationAroundTarget = 0.0f;
 
     //the angle at which we're looking down or up at the target
     float elevationToTarget = 0.0f;

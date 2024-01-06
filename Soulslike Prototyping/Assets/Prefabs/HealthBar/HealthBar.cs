@@ -40,10 +40,10 @@ public class HealthBar : MonoBehaviour
             }
             if (orbitingCamera != null) {
                 if (type == displayType.health) {
-                    textBox.text = string.Format("{0}: {1}/{2}", entity.name, entityStats.currentHP, entityStats.maxHP);
+                    textBox.text = string.Format("{0}: {1}/{2}", entity.name, Mathf.RoundToInt(entityStats.currentHP), entityStats.maxHP);
                 }
                 else if (type == displayType.stamina) {
-                    textBox.text = string.Format("{0}: {1}/{2}", entity.name, entityStats.currentStamina, entityStats.maxStamina);
+                    textBox.text = string.Format("{0}: {1}/{2}", entity.name, Mathf.RoundToInt(entityStats.currentStamina), entityStats.maxStamina);
                 }
             }
         }
