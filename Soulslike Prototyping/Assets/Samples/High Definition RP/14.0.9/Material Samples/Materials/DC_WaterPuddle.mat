@@ -118,14 +118,26 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - Vector1_1886D5D5: 0.576
-    - Vector1_645404D7: 0.9
+    - Vector1_1886D5D5: 0.571
+    - Vector1_645404D7: 0.993
     - Vector1_6B9EA178: 1
     - Vector1_D03EAD1A: 1
     - Vector1_DC0D7652: 1
-    - Vector1_E04DC205: 0.05
+    - Vector1_E04DC205: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -148,7 +160,9 @@ Material:
     - _DecalColorMask1: 15
     - _DecalColorMask2: 3
     - _DecalColorMask3: 0
+    - _DecalMeshBiasType: 0
     - _DecalMeshDepthBias: 0
+    - _DecalMeshViewBias: 0
     - _DecalStencilRef: 16
     - _DecalStencilWriteMask: 16
     - _DepthOffsetEnable: 0
@@ -258,7 +272,7 @@ Material:
     - _ZTestModeDistortion: 8
     - _ZWrite: 1
     m_Colors:
-    - Color_DF96D22A: {r: 0, g: 0, b: 0, a: 0}
+    - Color_DF96D22A: {r: 0.19999999, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
