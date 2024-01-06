@@ -13,6 +13,8 @@ public class RiotTrollControllerV2 : MonoBehaviour
     [SerializeField] float walkSpeed = 2.5f;
     [SerializeField] float runSpeed = 5;
 
+    float timeSinceAttack = 0f;
+
     [SerializeField] List<AttackHitbox> attackHitboxes = new List<AttackHitbox>();
 
     public enum riotTrollStates
@@ -47,13 +49,20 @@ public class RiotTrollControllerV2 : MonoBehaviour
             //get distance to player
             Vector3 vectorToPlayer = (player.transform.position - transform.position);
             float distanceToPlayer = vectorToPlayer.magnitude;
-            Debug.Log(distanceToPlayer);
+            //Debug.Log(distanceToPlayer);
 
             //get the angle to the player
             vectorToPlayer.y = 0;
             vectorToPlayer.Normalize();
             float angleToPlayer = Vector3.Angle(transform.forward, vectorToPlayer);
 
+            if (angleToPlayer > 20 && angleToPlayer <= 50 && distanceToPlayer < 5f && stats.currentStamina >= 15 && timeSinceAttack <= Time.fixedDeltaTime * 3) {
+                Debug.Log("follow-up");
+                stats.currentStamina -= 15;
+
+                animator.SetBool("isSwing", true);
+                currentState = riotTrollStates.swing;
+            }
             if (angleToPlayer <= 20 && distanceToPlayer < 4f && stats.currentStamina >= 15) {
                 stats.currentStamina -= 15;
 
@@ -66,20 +75,20 @@ public class RiotTrollControllerV2 : MonoBehaviour
                 animator.SetBool("isSwing", true);
                 currentState = riotTrollStates.swing;
             }
-            else if (angleToPlayer > 140 && distanceToPlayer < 4f && stats.currentStamina >= 20) {
+            else if (angleToPlayer > 110 && distanceToPlayer < 4f && stats.currentStamina >= 20) {
                 stats.currentStamina -= 20;
 
                 animator.SetBool("isBackswing", true);
                 currentState = riotTrollStates.backswing;
             }
-            else if (distanceToPlayer < 4f && stats.currentStamina >= 30) {
+            else if (distanceToPlayer < 4.5f && stats.currentStamina >= 35) {
                 stats.currentStamina -= 30;
 
                 animator.SetBool("isSmash", true);
                 currentState = riotTrollStates.smash;
             }
             else {
-                
+                timeSinceAttack += Time.fixedDeltaTime;
             }
         }
         else {
@@ -138,6 +147,8 @@ public class RiotTrollControllerV2 : MonoBehaviour
         animator.SetBool("isBackswing", false);
         animator.SetBool("isBash", false);
         animator.SetBool("isSmash", false);
+
+        timeSinceAttack = 0f;
 
         //turn off any attack hitboxes
         for (int i = 0; i < attackHitboxes.Count; i++) {

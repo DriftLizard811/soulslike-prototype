@@ -28,6 +28,10 @@ public class PlayerControllerV1 : MonoBehaviour
     [SerializeField] float damagedSpeed = 6f;
     Vector3 damagedDirection = Vector3.zero;
 
+    //attack variables
+    [SerializeField] float lungeSpeed = 2f;
+    Vector3 lungeDirection = Vector3.zero;
+
     //gravity tracking variables
     public Vector3 gravityVector = Vector3.zero;
     [SerializeField] float gravityFactor = 9.8f;
@@ -119,7 +123,7 @@ public class PlayerControllerV1 : MonoBehaviour
             TryMove(dodgeDirection, sidestepSpeed * Time.fixedDeltaTime + enemyCollisionOffset, sidestepSpeed);
         }
         else if (currentState == playerStates.stab) {
-
+            TryMove(lungeDirection, lungeSpeed * Time.fixedDeltaTime + enemyCollisionOffset, lungeSpeed);
         }
         else if (currentState == playerStates.damaged) {
             TryMove(damagedDirection, damagedSpeed * Time.fixedDeltaTime + enemyCollisionOffset, damagedSpeed);
@@ -261,6 +265,7 @@ public class PlayerControllerV1 : MonoBehaviour
             if (orbitingCamera.isLockedOn) {
                 //turn off lock on
                 orbitingCamera.isLockedOn = false;
+                orbitingCamera.transform.rotation = Quaternion.Euler(0, orbitingCamera.transform.rotation.y, 0);
             }
             else {
                 if (GlobalData.global.enemyList.Count > 0) {
@@ -339,6 +344,9 @@ public class PlayerControllerV1 : MonoBehaviour
 
             //disable camera rotation
             orbitingCamera.canRotateCamera = false;
+
+            //get the direction to lunge/move for the attack
+            lungeDirection = transform.forward;
 
             //enter stab state
             currentState = playerStates.stab;
