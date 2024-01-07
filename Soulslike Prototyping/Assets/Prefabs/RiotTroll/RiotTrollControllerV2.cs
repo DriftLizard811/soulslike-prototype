@@ -23,7 +23,8 @@ public class RiotTrollControllerV2 : MonoBehaviour
         swing = 1,
         backswing = 2,
         bash = 3,
-        smash = 4
+        smash = 4,
+        stagger = 5
     }
 
     public riotTrollStates currentState = riotTrollStates.neutral;
@@ -39,6 +40,7 @@ public class RiotTrollControllerV2 : MonoBehaviour
     void FixedUpdate()
     {
         CheckHealth();
+        CheckStagger();
 
         if (currentState == riotTrollStates.neutral) {
             //move the troll towards the player
@@ -56,7 +58,7 @@ public class RiotTrollControllerV2 : MonoBehaviour
             vectorToPlayer.Normalize();
             float angleToPlayer = Vector3.Angle(transform.forward, vectorToPlayer);
 
-            if (angleToPlayer > 20 && angleToPlayer <= 50 && distanceToPlayer < 5f && stats.currentStamina >= 15 && timeSinceAttack <= Time.fixedDeltaTime * 3) {
+            if (angleToPlayer > 20 && angleToPlayer <= 50 && distanceToPlayer < 5f && stats.currentStamina >= 20 && timeSinceAttack <= Time.fixedDeltaTime * 3) {
                 Debug.Log("follow-up");
                 stats.currentStamina -= 15;
 
@@ -81,7 +83,7 @@ public class RiotTrollControllerV2 : MonoBehaviour
                 animator.SetBool("isBackswing", true);
                 currentState = riotTrollStates.backswing;
             }
-            else if (distanceToPlayer < 4.5f && stats.currentStamina >= 35) {
+            else if (distanceToPlayer < 4.5f && stats.currentStamina >= 40) {
                 stats.currentStamina -= 30;
 
                 animator.SetBool("isSmash", true);
@@ -140,13 +142,37 @@ public class RiotTrollControllerV2 : MonoBehaviour
         attackHitboxes[hitboxToActivate].DisableAttack();
     }
 
-    public void ReturnToIdleState()
+    void CheckStagger()
     {
-        currentState = riotTrollStates.neutral;
+        if (stats.poiseMeter >= stats.poiseCap) {
+            animator.SetBool("isStagger", true);
+            //ResetAnimatorBools();
+            currentState = riotTrollStates.stagger;
+        }
+    }
+
+    public void ResetPoise()
+    {
+        stats.poiseMeter = 0;
+        stats.isStaggered = false;
+    }
+
+    public void ResetAnimatorBools()
+    {
         animator.SetBool("isSwing", false);
         animator.SetBool("isBackswing", false);
         animator.SetBool("isBash", false);
         animator.SetBool("isSmash", false);
+
+        animator.SetBool("isWalking", false);
+        animator.SetBool("isRunning", false);
+    }
+
+    public void ReturnToIdleState()
+    {
+        currentState = riotTrollStates.neutral;
+        ResetAnimatorBools();
+        animator.SetBool("isStagger", false);
 
         timeSinceAttack = 0f;
 

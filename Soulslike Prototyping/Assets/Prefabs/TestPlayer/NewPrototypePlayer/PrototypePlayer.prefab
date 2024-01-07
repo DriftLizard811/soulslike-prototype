@@ -555,7 +555,7 @@ MonoBehaviour:
   sidestepSpeed: 8
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraTransform: {fileID: 0}
-  damagedSpeed: 6
+  damagedSpeed: 8
   lungeSpeed: 3
   gravityVector: {x: 0, y: 0, z: 0}
   gravityFactor: 9.8

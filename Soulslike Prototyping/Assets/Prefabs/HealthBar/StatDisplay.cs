@@ -1,21 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.TextCore;
+using UnityEngine.SocialPlatforms.GameCenter;
 
-public class HealthBar : MonoBehaviour
+public class StatDisplay : MonoBehaviour
 {
     OrbitingCamera orbitingCamera;
 
     [SerializeField] GameObject entity;
     CharacterStats entityStats;
-
-    [SerializeField] RectTransform uiTransform;
-
-    TextMeshProUGUI textBox;
     RectTransform rectTransform;
+
+    //Setup vars
+    [SerializeField] int displayHeight;
+    [SerializeField] int pixelsPerUnit;
 
     public enum displayType
     {
@@ -28,9 +26,10 @@ public class HealthBar : MonoBehaviour
 
     void Awake()
     {
-        textBox = GetComponent<TextMeshProUGUI>();
         rectTransform = GetComponent<RectTransform>();
         entityStats = entity.GetComponent<CharacterStats>();
+
+        DisplaySetup();
     }
 
     void LateUpdate()
@@ -40,16 +39,28 @@ public class HealthBar : MonoBehaviour
                 orbitingCamera = GlobalData.global.orbitingCamera;
             }
             if (orbitingCamera != null) {
-                if (type == displayType.health) {
-                    textBox.text = string.Format("{0}: {1}/{2}", entity.name, Mathf.RoundToInt(entityStats.currentHP), entityStats.maxHP);
-                }
-                else if (type == displayType.stamina) {
-                    textBox.text = string.Format("{0}: {1}/{2}", entity.name, Mathf.RoundToInt(entityStats.currentStamina), entityStats.maxStamina);
-                }
-                else if (type == displayType.poise) {
-                    textBox.text = string.Format("{0}: {1}/{2}", entity.name, Mathf.RoundToInt(entityStats.poiseMeter), entityStats.poiseCap);
-                }
+                DisplayUpdate();   
             }
+        }
+    }
+
+    void DisplaySetup()
+    {
+        if (type == displayType.health) {
+            rectTransform.sizeDelta = new Vector2(pixelsPerUnit * entityStats.maxHP, displayHeight);
+        }
+        else if (type == displayType.stamina) {
+            rectTransform.sizeDelta = new Vector2(pixelsPerUnit * entityStats.maxStamina, displayHeight);
+        }
+    }
+
+    void DisplayUpdate()
+    {
+        if (type == displayType.health) {
+            rectTransform.sizeDelta = new Vector2(pixelsPerUnit * entityStats.currentHP, displayHeight);
+        }
+        else if (type == displayType.stamina) {
+            rectTransform.sizeDelta = new Vector2(pixelsPerUnit * Mathf.RoundToInt(entityStats.currentStamina), displayHeight);
         }
     }
 

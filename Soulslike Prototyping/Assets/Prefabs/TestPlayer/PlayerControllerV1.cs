@@ -138,7 +138,7 @@ public class PlayerControllerV1 : MonoBehaviour
         var moveRay = new Ray(transform.position, direction);
         var moveHit = Physics.Raycast(moveRay, out hitInfo, distance);
 
-        Debug.Log(hitInfo.distance);
+        //Debug.Log(hitInfo.distance);
         if (hitInfo.collider != null) {
             if (hitInfo.collider.tag == "Enemy") {
                 return false;

@@ -13,6 +13,11 @@ public class CharacterStats : MonoBehaviour
     public float currentStamina;
     float staminaPerFrame = 0.2f;
 
+    public float poiseCap;
+    public float poiseMeter;
+    float poiseRechargePerFrame = 0.01f;
+    public bool isStaggered;
+
     void Awake()
     {
         currentHP = maxHP;
@@ -23,6 +28,12 @@ public class CharacterStats : MonoBehaviour
     {
         if (currentStamina < maxStamina) {
             currentStamina += staminaPerFrame;
+        }
+        if (poiseMeter > poiseCap) {
+            isStaggered = true;
+        }
+        if (poiseMeter > 0) {
+            poiseMeter -= poiseRechargePerFrame;
         }
     }
 }

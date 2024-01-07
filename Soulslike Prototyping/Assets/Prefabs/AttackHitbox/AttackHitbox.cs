@@ -41,6 +41,7 @@ public class AttackHitbox : MonoBehaviour
             if (otherStats != null) {
                 if (!otherStats.isInvincible) {
                     otherStats.currentHP -= damageAmount;
+                    otherStats.poiseMeter += damageAmount;
                     if (other.tag == "Player" && targetTag == "Player") {
                         var playerScript = other.GetComponentInParent<PlayerControllerV1>();
                         playerScript.ReturnToIdleState();
