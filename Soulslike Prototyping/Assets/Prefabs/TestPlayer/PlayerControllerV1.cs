@@ -172,7 +172,7 @@ public class PlayerControllerV1 : MonoBehaviour
     public void EnableAttack()
     {
         int hitboxIndex = (int) currentState;
-        Debug.Log(hitboxIndex);
+        //Debug.Log(hitboxIndex);
 
         if (attackHitboxes[hitboxIndex] != null) {
             attackHitboxes[hitboxIndex].EnabledAttack();
@@ -206,7 +206,7 @@ public class PlayerControllerV1 : MonoBehaviour
     bool IsPointOnScreen(Vector3 point)
     {
         var screenPoint = Camera.main.WorldToScreenPoint(point);
-        Debug.Log(screenPoint);
+        //Debug.Log(screenPoint);
         if (screenPoint.x >= 0 && screenPoint.x <= orbitingCamera.screenWidth && screenPoint.y >= 0 && screenPoint.y <= orbitingCamera.screenHeight && screenPoint.z >= 0) {
             return true;
         }

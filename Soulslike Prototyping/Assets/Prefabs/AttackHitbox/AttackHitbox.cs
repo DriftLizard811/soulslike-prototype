@@ -40,8 +40,12 @@ public class AttackHitbox : MonoBehaviour
 
             if (otherStats != null) {
                 if (!otherStats.isInvincible) {
-                    otherStats.currentHP -= damageAmount;
-                    otherStats.poiseMeter += damageAmount;
+                    float defenseFactor = (100 - otherStats.defense) / 100;
+                    int damageToDeal = Mathf.CeilToInt(damageAmount * defenseFactor);
+                    otherStats.currentHP -= damageToDeal;
+                    otherStats.poiseMeter += damageToDeal;
+                    //Debug.LogFormat("(100 - {0}) / 100 = {1}", otherStats.defense, defenseFactor);
+
                     if (other.tag == "Player" && targetTag == "Player") {
                         var playerScript = other.GetComponentInParent<PlayerControllerV1>();
                         playerScript.ReturnToIdleState();

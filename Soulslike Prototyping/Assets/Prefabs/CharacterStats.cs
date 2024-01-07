@@ -9,13 +9,15 @@ public class CharacterStats : MonoBehaviour
     public int currentHP;
     public bool isInvincible = false;
 
+    public float defense;
+
     public float maxStamina;
     public float currentStamina;
     float staminaPerFrame = 0.2f;
 
     public float poiseCap;
     public float poiseMeter;
-    float poiseRechargePerFrame = 0.01f;
+    float poiseRechargePerFrame = 0.1f;
     public bool isStaggered;
 
     void Awake()

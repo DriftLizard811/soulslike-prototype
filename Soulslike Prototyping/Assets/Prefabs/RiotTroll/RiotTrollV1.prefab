@@ -101,7 +101,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6698685827405264531, guid: f4753898854cf90408bce1d20fd9c233, type: 3}
       propertyPath: damageAmount
-      value: 4
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 9061431097083647835, guid: f4753898854cf90408bce1d20fd9c233, type: 3}
       propertyPath: m_Name
@@ -530,12 +530,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b6d1013869ebf8469dc6e3e3c2c80f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 100
+  maxHP: 1000
   currentHP: 0
   isInvincible: 0
+  defense: 1
   maxStamina: 50
   currentStamina: 0
-  poiseCap: 10
+  poiseCap: 100
   poiseMeter: 0
   isStaggered: 0
 --- !u!54 &4303148393370405815
@@ -635,7 +636,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6698685827405264531, guid: f4753898854cf90408bce1d20fd9c233, type: 3}
       propertyPath: damageAmount
-      value: 3
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 9061431097083647835, guid: f4753898854cf90408bce1d20fd9c233, type: 3}
       propertyPath: m_Name
@@ -728,7 +729,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6698685827405264531, guid: f4753898854cf90408bce1d20fd9c233, type: 3}
       propertyPath: damageAmount
-      value: 2
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 9061431097083647835, guid: f4753898854cf90408bce1d20fd9c233, type: 3}
       propertyPath: m_Name
@@ -825,7 +826,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6698685827405264531, guid: f4753898854cf90408bce1d20fd9c233, type: 3}
       propertyPath: damageAmount
-      value: 3
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 9061431097083647835, guid: f4753898854cf90408bce1d20fd9c233, type: 3}
       propertyPath: m_Name
